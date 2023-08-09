@@ -24,10 +24,6 @@ public class EmployeeController {
     public Employee getEmployeeById(@PathVariable String id) throws EmployeeDoesNotExistException {
         return employeeService.getEmployeeById(id);
     }
-    @GetMapping("/ids")
-    public Set<String> getAllEmployeesIDs() {
-        return employeeService.getAllEmployeesIDs();
-    }
 
     @PostMapping
     public Employee addEmployee(@RequestBody Employee employee) throws Exception {

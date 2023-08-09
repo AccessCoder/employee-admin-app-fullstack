@@ -15,47 +15,34 @@ public class EmployeeService {
     private EmployeeRepository employeeRepository;
 
     public List<Employee> getAllEmployees() {
-        return employeeRepository.getAllEmployees();
+        return employeeRepository.findAll();
     }
 
-    public Employee addEmployee(Employee employee) throws EmployeeAlreadyExistException {
-        boolean containsEmployee = employeeRepository.isEmployeePresent(employee.getId());
-        if (containsEmployee) {
-            throw new EmployeeAlreadyExistException("Email is already used");
-        }
-        Employee addedEmployee = employeeRepository.addEmployee(employee);
-        return addedEmployee;
+    public Employee addEmployee(Employee employee) {
+       return employeeRepository.save(employee);
     }
 
     public Employee removeEmployee(String id) throws EmployeeDoesNotExistException {
-        boolean containsNotEmployee = !employeeRepository.isEmployeePresent(id);
-
-        if (containsNotEmployee) {
+        if (!employeeRepository.existsById(id)) {
             throw new EmployeeDoesNotExistException("Employee does not exists");
         }
-
-        Employee removedEmployee = employeeRepository.removeEmployee(id);
+        Employee removedEmployee = employeeRepository.findById(id).orElseThrow(
+                () -> new EmployeeDoesNotExistException("No User with ID: " + id + " found. Please try again"));
+        employeeRepository.deleteById(id);
         return removedEmployee;
     }
 
     public Employee updateEmployee(String id, Employee employee) throws EmployeeDoesNotExistException, EmployeeAlreadyExistException {
-        boolean containsNotEmployee = !employeeRepository.isEmployeePresent(id);
+        boolean containsNotEmployee = !employeeRepository.existsById(id);
         if (containsNotEmployee) {
             throw new EmployeeDoesNotExistException("Employee does not exists");
         }
-        Employee updatedEmployee = employeeRepository.updateEmployee(id, employee);
+        Employee updatedEmployee = employeeRepository.save(employee);
         return updatedEmployee;
     }
 
-    public Set<String> getAllEmployeesIDs() {
-        return employeeRepository.getAllEmployeesIDs();
-    }
-
     public Employee getEmployeeById(String id) throws EmployeeDoesNotExistException {
-        boolean containsNotEmployee = !employeeRepository.isEmployeePresent(id);
-        if (containsNotEmployee) {
-            throw new EmployeeDoesNotExistException("Employee does not exists");
-        }
-        return employeeRepository.getEmployeeById(id);
+        return employeeRepository.findById(id).orElseThrow(
+                () -> new EmployeeDoesNotExistException("Employee does not exists"));
     }
 }
