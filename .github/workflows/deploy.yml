@@ -92,7 +92,7 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           #Set App Name (replace "bo-java-23-2-pokemon" with your ssh user name)
           #Set dockerhub project (replace "accesscoder/testdeploy")
-          #Set IP (replace "10.0.1.99" with your ip address)
+          #Set IP (replace "10.0.7.11" with your ip address)
           script: |
             sudo docker stop bo-java-23-2-pokemon
             sudo docker rm bo-java-23-2-pokemon
