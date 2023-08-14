@@ -5,10 +5,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -20,6 +23,7 @@ public class EmployeeControllerTest {
     private EmployeeRepository employeeRepository;
 
     @Test
+    @WithMockUser(username = "Martin", password = "13")
     void getAllEmployees_shouldReturnEmptyList_whenRepositoryIsEmpty() throws Exception {
         mvc.perform(MockMvcRequestBuilders.get("/api/employees"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -28,6 +32,7 @@ public class EmployeeControllerTest {
 
     @DirtiesContext
     @Test
+    @WithMockUser(username = "Martin", password = "13")
     void getAllEmployees_shouldReturnListWithOneObject_whenOneObjectWasSavedInRepository() throws Exception {
         Employee employee = new Employee("123456", "Martin", "Pagels", "martin@neuefische.de", "Coach");
         employeeRepository.save(employee);
@@ -51,6 +56,7 @@ public class EmployeeControllerTest {
 
     @DirtiesContext
     @Test
+    @WithMockUser(username = "Martin", password = "13")
     void addEmployee_shouldReturnCreatedEmployees() throws Exception {
         mvc.perform(MockMvcRequestBuilders.post("/api/employees")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -64,7 +70,8 @@ public class EmployeeControllerTest {
                                       "role": "Coach"
                                   }
                                 """
-                        ))
+                        )
+                        .with(csrf()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json(
                         """
@@ -81,6 +88,7 @@ public class EmployeeControllerTest {
 
     @DirtiesContext
     @Test
+    @WithMockUser(username = "Martin", password = "13")
     void addEmployee_shouldReturnStatusCode304_whenEmployeeIsAlreadyInRepositoryCheckedThroughId() throws Exception {
         Employee employee = new Employee("123456", "Martin", "Pagels", "martin@neuefische.de", "Coach");
         employeeRepository.save(employee);
@@ -97,17 +105,20 @@ public class EmployeeControllerTest {
                                       "role": "Coach"
                                   }
                                 """
-                        ))
+                        ).with(csrf()))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @DirtiesContext
     @Test
+    @WithMockUser(username = "Martin", password = "13")
     void deleteEmployee_shouldReturnDeletedEmployee() throws Exception {
         Employee employee = new Employee("123456", "Martin", "Pagels", "martin@neuefische.de", "Coach");
         employeeRepository.save(employee);
 
-        mvc.perform(MockMvcRequestBuilders.delete("/api/employees/123456"))
+        mvc.perform(MockMvcRequestBuilders.delete("/api/employees/123456")
+                        .with(csrf()))
+
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json(
                         """
@@ -124,13 +135,16 @@ public class EmployeeControllerTest {
 
 
     @Test
+    @WithMockUser(username = "Martin", password = "13")
     void deleteEmployee_shouldReturn404_whenNoEmplyoeeWasFoundToDelete() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.delete("/api/employees/123456"))
+        mvc.perform(MockMvcRequestBuilders.delete("/api/employees/123456")
+                .with(csrf()))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
     @DirtiesContext
     @Test
+    @WithMockUser(username = "Martin", password = "13")
     void updateEmployee_shouldReturnUpdatedEmployee_whenEmailWasChanged() throws Exception {
         Employee employee = new Employee("123456", "Martin", "Pagels", "martin@neuefische.de", "Coach");
         employeeRepository.save(employee);
@@ -146,7 +160,7 @@ public class EmployeeControllerTest {
                                      "role": "Coach"
                                  }
                                 """
-                        ))
+                        ).with(csrf()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json(
                         """
@@ -161,6 +175,7 @@ public class EmployeeControllerTest {
                 ));
     }@DirtiesContext
     @Test
+    @WithMockUser(username = "Martin", password = "13")
     void updateEmployee_shouldReturnUpdatedEmployee_whenNameWasChanged() throws Exception {
         Employee employee = new Employee("123456", "Martin", "Pagels", "martin@neuefische.de", "Coach");
         employeeRepository.save(employee);
@@ -176,7 +191,7 @@ public class EmployeeControllerTest {
                                      "role": "Coach"
                                  }
                                 """
-                        ))
+                        ).with(csrf()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json(
                         """
@@ -192,6 +207,7 @@ public class EmployeeControllerTest {
     }
     @DirtiesContext
     @Test
+    @WithMockUser(username = "Martin", password = "13")
     void updateEmployee_shouldReturn304_whenUpdatedEmployeeHasEmailThatIsAlreadyUsed() throws Exception {
         Employee employee = new Employee("123456", "Martin", "Pagels", "martin@neuefische.de", "Coach");
         Employee employee2 = new Employee("123457", "Robert", "Hoffmann", "robert@neuefische.de", "Coach");
@@ -210,12 +226,13 @@ public class EmployeeControllerTest {
                                      "role": "Coach"
                                  }
                                 """
-                        ))
+                        ).with(csrf()))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
     
     @DirtiesContext
     @Test
+    @WithMockUser(username = "Martin", password = "13")
     void addEmployee_shouldReturn302_whenNewEmployeeHasEmailThatIsAlreadyInUse() throws Exception {
         Employee employee = new Employee("123456", "Martin", "Pagels", "martin@neuefische.de", "Coach");
         employeeRepository.save(employee);
@@ -231,7 +248,7 @@ public class EmployeeControllerTest {
                                      "role": "Coach"
                                  }
                                 """
-                        ))
+                        ).with(csrf()))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 }
