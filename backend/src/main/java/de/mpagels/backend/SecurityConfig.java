@@ -21,7 +21,6 @@ import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 @Configuration
 public class SecurityConfig {
 
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8();
@@ -36,14 +35,19 @@ public class SecurityConfig {
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                         .csrfTokenRequestHandler(requestHandler))
                 .httpBasic(Customizer.withDefaults())
-                .sessionManagement(httpSecuritySessionManagementConfigurer ->
-                        httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
+                .httpBasic(basic -> basic.authenticationEntryPoint(
+                        (request, response, authException) ->
+                                response.sendError(
+                                        HttpStatus.UNAUTHORIZED.value(),
+                                        HttpStatus.UNAUTHORIZED.getReasonPhrase()
+                                )))
                 .authorizeHttpRequests(httpRequests ->
                         httpRequests
                                 .requestMatchers("/api/user").permitAll()
                                 .requestMatchers("/api/user/**").permitAll()
                                // .requestMatchers("/api/employees").hasRole("ADMIN") -> User Roles anlegen!!
-                                .anyRequest().authenticated()
+                                .anyRequest().permitAll()
                 )
                 .build();
     }

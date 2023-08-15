@@ -7,6 +7,8 @@ import { AddPage } from './pages/AddPage'
 import { useEffect, useState } from 'react'
 import axios ,{AxiosResponse, AxiosError} from 'axios'
 import EmployeePage from './pages/EmployeePage'
+import LoginPage from "./pages/LoginPage/LoginPage.tsx";
+import RegisterPage from "./pages/RegisterPage";
 
 export type Employee = {
   id: string
@@ -76,8 +78,20 @@ function App() {
   }
   return (
     <Routes>
+        <Route
+            path={'/'}
+            element={
+            <LoginPage/>
+        }
+    />
+        <Route
+            path={'/register'}
+            element={
+                <RegisterPage/>
+            }
+        />
       <Route
-        path={'/'}
+        path={'/home'}
         element={
           <Homepage employees={employees} deleteEmployee={deleteEmployee} toggleIsEditMode={toggleIsEditMode}>
             <Headline label={'Employee list'} />
