@@ -40,7 +40,8 @@ public class SecurityConfig {
                         httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
                 .authorizeHttpRequests(httpRequests ->
                         httpRequests
-                                .requestMatchers(HttpMethod.POST, "/api/user").permitAll()
+                                .requestMatchers("/api/user").permitAll()
+                                .requestMatchers("/api/user/**").permitAll()
                                // .requestMatchers("/api/employees").hasRole("ADMIN") -> User Roles anlegen!!
                                 .anyRequest().authenticated()
                 )
