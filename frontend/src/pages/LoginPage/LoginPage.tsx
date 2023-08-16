@@ -2,7 +2,10 @@ import {ChangeEvent, FormEvent, useState} from "react";
 import axios from "axios";
 import {Link, useNavigate} from "react-router-dom";
 
-export default function LoginPage(){
+type Props = {
+    setUser: (user:string) => void
+}
+export default function LoginPage(loginPageProps:Props){
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -19,6 +22,7 @@ export default function LoginPage(){
     function login(event:FormEvent<HTMLFormElement>){
         event.preventDefault();
         axios.post("/api/user/login",undefined, {auth: {username, password}})
+            .then((response) => loginPageProps.setUser(response.data))
             .then(() => nav("/home"))
             .catch((error) => console.log(error))
     }

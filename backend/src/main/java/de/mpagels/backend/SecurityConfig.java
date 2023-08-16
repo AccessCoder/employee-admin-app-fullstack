@@ -46,6 +46,7 @@ public class SecurityConfig {
                         httpRequests
                                 .requestMatchers("/api/user").permitAll()
                                 .requestMatchers("/api/user/**").permitAll()
+                                .requestMatchers("/api/employees").authenticated()
                                // .requestMatchers("/api/employees").hasRole("ADMIN") -> User Roles anlegen!!
                                 .anyRequest().permitAll()
                 )

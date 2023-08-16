@@ -9,6 +9,7 @@ import axios ,{AxiosResponse, AxiosError} from 'axios'
 import EmployeePage from './pages/EmployeePage'
 import LoginPage from "./pages/LoginPage/LoginPage.tsx";
 import RegisterPage from "./pages/RegisterPage";
+import ProtectedRoute from "./components/ProtectedRoutes/ProtectedRoute.tsx";
 
 export type Employee = {
   id: string
@@ -21,6 +22,7 @@ export type Employee = {
 function App() {
   const [employees, setEmployees] = useState<Employee[]>([])
     const [isInEditMode, setIsInEditMode] = useState<boolean>(false)
+    const [user, setUser] = useState("")
     const navigate = useNavigate()
 
   useEffect(() => {
@@ -81,7 +83,7 @@ function App() {
         <Route
             path={'/'}
             element={
-            <LoginPage/>
+            <LoginPage setUser={setUser}/>
         }
     />
         <Route
@@ -90,6 +92,7 @@ function App() {
                 <RegisterPage/>
             }
         />
+        <Route element={<ProtectedRoute user={user}/>}>
       <Route
         path={'/home'}
         element={
@@ -114,6 +117,7 @@ function App() {
           </EmployeePage>
         }
       />
+        </Route>
     </Routes>
   )
 }

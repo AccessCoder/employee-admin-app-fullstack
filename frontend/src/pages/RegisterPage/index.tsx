@@ -32,7 +32,7 @@ export default function RegisterPage(){
             <form onSubmit={register}>
             <input type={"text"} placeholder={"please insert your username"} required={true}
                 onChange={onChangeUsername}/>
-            <input type={"text"} placeholder={"please insert your password"} required={true}
+            <input type={"password"} placeholder={"please insert your password"} required={true}
                    onChange={onChangePassword}/>
                 <button>Register to the Website</button>
             </form>

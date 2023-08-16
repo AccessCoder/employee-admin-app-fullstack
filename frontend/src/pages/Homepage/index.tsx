@@ -39,7 +39,7 @@ export function Homepage({
   function logout(event:FormEvent<HTMLFormElement>){
     event.preventDefault()
     axios.post("/api/user/logout")
-        .then((response) => console.log(response.data))
+        .then((response) => console.log(response.data))//toastify
         .then(() => nav("/"))
         .catch((error) => console.log(error))
   }

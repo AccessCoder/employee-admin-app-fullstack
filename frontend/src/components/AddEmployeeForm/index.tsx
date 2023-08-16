@@ -92,7 +92,7 @@ export function AddEmployeeForm({ addEmployee, employeeData = emptyEmployeeData,
         </select>
       </div>
       <button className={'form-save-btn button-size'}>{isInEditMode ? "Edit employee" : "Save employee"}</button>
-      <Link to={'/'}>
+      <Link to={'/home'}>
         <button onClick={toggleEditMode} className={'form-cancel-btn button-size'} type={'button'}>
           Cancel and back
         </button>
