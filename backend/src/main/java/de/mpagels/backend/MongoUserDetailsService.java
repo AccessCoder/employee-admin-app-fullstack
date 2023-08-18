@@ -16,6 +16,7 @@ import java.util.List;
 public class MongoUserDetailsService implements UserDetailsService {
 
     private final MongoUserRepo repo;
+    private final IdService idService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -25,12 +26,14 @@ public class MongoUserDetailsService implements UserDetailsService {
     }
 
 
-    public MongoUser saveUser(MongoUser user) {
+    public MongoUser saveUser(MongoUser user) { // id: 2r43r2r-32423-werfwefw3-23rwer3, username:xy, password:argons2adersfgjuikhdgfkhdfasiokj
         if (repo.findMongoUserByUsername(user.getUsername()).equals(user.getUsername())){
             throw new IllegalArgumentException("Username already taken");
         }
         PasswordEncoder encoder = Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8();
-        repo.save(user.withPassword(encoder.encode(user.getPassword())));
+        repo.save(user
+                .withPassword(encoder.encode(user.getPassword()))
+                .withId(idService.generateId()));
         return user;
     }
 }

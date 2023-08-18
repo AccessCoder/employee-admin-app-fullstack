@@ -12,14 +12,15 @@ import java.util.Set;
 @AllArgsConstructor
 public class EmployeeService {
 
-    private EmployeeRepository employeeRepository;
+    private final EmployeeRepository employeeRepository;
+    private final IdService idService;
 
     public List<Employee> getAllEmployees() {
         return employeeRepository.findAll();
     }
 
-    public Employee addEmployee(Employee employee) {
-       return employeeRepository.save(employee);
+    public Employee addEmployee(Employee employee)  {
+       return employeeRepository.save(employee.withId(idService.generateId()));
     }
 
     public Employee removeEmployee(String id) throws EmployeeDoesNotExistException {

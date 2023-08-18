@@ -13,9 +13,12 @@ public class EmployeeServiceTest {
     @Test
     public void create_whenCreateWithValidCar_thenNoError() {
         EmployeeRepository employeeRepository = Mockito.mock(EmployeeRepository.class);
-        EmployeeService employeeService = new EmployeeService(employeeRepository);
+        IdService idService = Mockito.mock(IdService.class);
+        EmployeeService employeeService = new EmployeeService(employeeRepository, idService);
 
-        employeeService.addEmployee(new Employee("123456", "Martin", "Pagels", "martin@neuefische.de", "Coach"));
+        Mockito.when(idService.generateId()).thenReturn("123456");
+
+        employeeService.addEmployee(new Employee(null,"Martin", "Pagels", "martin@neuefische.de", "Coach"));
 
         Mockito.verify(employeeRepository).save(new Employee("123456", "Martin", "Pagels", "martin@neuefische.de", "Coach"));
     }
@@ -23,7 +26,8 @@ public class EmployeeServiceTest {
     @Test
     public void getAll_whenGetAll_thenReturnCorrectList() {
         EmployeeRepository employeeRepository = Mockito.mock(EmployeeRepository.class);
-        EmployeeService employeeService = new EmployeeService(employeeRepository);
+        IdService idService = Mockito.mock(IdService.class);
+        EmployeeService employeeService = new EmployeeService(employeeRepository, idService);
 
         Mockito.when(employeeRepository.findAll()).thenReturn(List.of(
                 new Employee("123456", "Martin", "Pagels", "martin@neuefische.de", "Coach"),
